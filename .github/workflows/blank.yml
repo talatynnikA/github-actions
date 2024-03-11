@@ -74,7 +74,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}  # Required for authenticated API access
         with:
-          tag_name: ${{ steps.increment-version.outputs.new_version }}
+          tag_name: ${{ github.event.inputs.build_version }}
           release_name: Release ${{ steps.my-action.outputs.file_path }}
           body: |
             Release for ${{ github.event.inputs.branch_name }}
