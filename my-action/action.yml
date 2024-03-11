@@ -1,0 +1,36 @@
+name: MyAction
+
+on:
+  workflow_dispatch:
+    inputs:
+      folder_path:
+        description: "Path to the folder where the file will be created"
+        required: true
+        type: string
+    outputs:
+      file_path:
+        description: "Path to the created file"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get folder path
+        id: get_folder_path
+        run: echo ${{ github.event.inputs.folder_path }}
+
+      - name: Create file
+        run: |
+          mkdir -p ${{ steps.get_folder_path.outputs.folder_path }}
+          echo "This is a file created by My Action." > ${{ steps.get_folder_path.outputs.folder_path }}/file.txt
+
+      - name: List files
+        run: |
+          find ${{ steps.get_folder_path.outputs.folder_path }} -type f
+
+      - name: Output file path
+        outputs:
+          file_path: ${{ steps.create_file.outputs.file_path }}
+        run: echo "File path: ${{ steps.create_file.outputs.file_path }}"
