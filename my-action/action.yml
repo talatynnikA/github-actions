@@ -1,36 +1,35 @@
 name: MyAction
+description: "action that creates file"
 
-on:
-  workflow_dispatch:
-    inputs:
-      folder_path:
-        description: "Path to the folder where the file will be created"
-        required: true
-        type: string
-    outputs:
-      file_path:
-        description: "Path to the created file"
+#inputs:
+#  folder_path:
+#    type: string
+#    required: true
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+runs:
+  using: "composite"
+  steps:
+    - name: Create file
+      id: create_file
+      shell: bash
+      run: |
+        echo hello
+        mkdir -p new_folder
+        cd new_folder
+        find . -type f | tee file_list.txt
+        cat file_list.txt
+    - name: Output file path
+      shell: bash
+      run: |
+        echo "File path: new_folder/file_list.txt"
 
-      - name: Get folder path
-        id: get_folder_path
-        run: echo ${{ github.event.inputs.folder_path }}
+#  echo folder path
+#  echo ${{ inputs.folder_path }}
+#  mkdir -p "${{ inputs.folder_path }}"
+#  echo "This is a file created by My Action." > "${{ inputs.folder_path }}/file.txt"
+#  echo "folder_path=${{ inputs.folder_path }}"
 
-      - name: Create file
-        run: |
-          mkdir -p ${{ steps.get_folder_path.outputs.folder_path }}
-          echo "This is a file created by My Action." > ${{ steps.get_folder_path.outputs.folder_path }}/file.txt
-
-      - name: List files
-        run: |
-          find ${{ steps.get_folder_path.outputs.folder_path }} -type f
-
-      - name: Output file path
-        outputs:
-          file_path: ${{ steps.create_file.outputs.file_path }}
-        run: echo "File path: ${{ steps.create_file.outputs.file_path }}"
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#
