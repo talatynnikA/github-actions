@@ -43,6 +43,7 @@ jobs:
           echo ${{ github.event.inputs.folder_path }}
 
   build:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
