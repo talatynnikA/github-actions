@@ -25,12 +25,13 @@ runs:
       shell: bash
       run: |
         echo "File path: ${{ inputs.folder_path }}/file_list.txt"
+#        steps.create_file.outputs.file_path = ${{ inputs.folder_path }}/file_list.txt
 #        echo "File path: ${{ outputs.file_path }}"
 
 outputs:
   file_path:
     description: "file, created by our action"
-    value: ""
+    value: ${{ inputs.folder_path }}/file_list.txt
 
 #  echo folder path
 #  echo ${{ inputs.folder_path }}

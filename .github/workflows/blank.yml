@@ -51,29 +51,21 @@ jobs:
       - uses: ./my-action
         with:
           folder_path: ${{ github.event.inputs.folder_path }}
-      - name: Extract tag name
-        run: |
-          tag_name1=$(echo ${{ github.ref_name }} | grep -o 'refs/tags/[^/]+$')
-          echo "The tag name is ${{ tag_name1 }}"
-          echo "The github ref name is ${{ github.ref_name }}"
-          tag_name= $(echo ${{ github.ref }} | sed 's/refs\/tags\///')
-          echo "Extracted tag name: $tag_name"
-          echo "::set-output name=extracted_tag::$tag_name"
+      - name: Echo file path
+        run: echo ${{ steps.my-action.outputs.file_path }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        with:
+          name: my-artifact
+          path: ${{ steps.my-action.outputs.file_path }}
       - name: Create release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}  # Required for authenticated API access
         with:
-          tag_name: ${{ steps.Extract_tag_name.outputs.extracted_tag }}  # Use extracted tag
-          release_name: Release ${{ steps.Extract_tag_name.outputs.extracted_tag }}
+          tag_name: 1.0.7
+          release_name: Release ${{ steps.my-action.outputs.file_path }}
           body: |
             Release for ${{ github.event.inputs.branch_name }}
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ${{ steps.my-action.outputs.file_path }}  #using outputs
-          asset_name: file_list.txt
-          asset_content_type: text/plain
