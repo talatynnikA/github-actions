@@ -1,10 +1,10 @@
 name: MyAction
 description: "action that creates file"
 
-#inputs:
-#  folder_path:
-#    type: string
-#    required: true
+inputs:
+  folder_path:
+    type: string
+    required: true
 
 runs:
   using: "composite"
@@ -14,14 +14,15 @@ runs:
       shell: bash
       run: |
         echo hello
-        mkdir -p new_folder
-        cd new_folder
+        echo ${{ inputs.folder_path }}
+        mkdir -p ${{ inputs.folder_path }}
+        cd ${{ inputs.folder_path }}
         find . -type f | tee file_list.txt
         cat file_list.txt
     - name: Output file path
       shell: bash
       run: |
-        echo "File path: new_folder/file_list.txt"
+        echo "File path: ${{ inputs.folder_path }}/file_list.txt"
 
 #  echo folder path
 #  echo ${{ inputs.folder_path }}
