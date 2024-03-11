@@ -19,10 +19,18 @@ runs:
         cd ${{ inputs.folder_path }}
         find . -type f | tee file_list.txt
         cat file_list.txt
+        echo "${{ inputs.folder_path }}/file_list.txt"
+        echo "::set-output name=file_path::${{ inputs.folder_path }}/file_list.txt"
     - name: Output file path
       shell: bash
       run: |
         echo "File path: ${{ inputs.folder_path }}/file_list.txt"
+#        echo "File path: ${{ outputs.file_path }}"
+
+outputs:
+  file_path:
+    description: "file, created by our action"
+    value: ""
 
 #  echo folder path
 #  echo ${{ inputs.folder_path }}
