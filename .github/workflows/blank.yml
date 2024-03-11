@@ -4,11 +4,9 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - '*'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -34,12 +32,12 @@ jobs:
             echo "Invalid branch or tag name. Skipping build."
             exit 1
           fi
+          echo Success
           if [[${{ github.event.inputs.build_version }} != "" ]]; then
             echo "Build version: ${{ github.event.inputs.build_version }}"
           fi
-      - name: output current branch
-        run: |
-          echo "Current branch/tag: $(echo ${github.ref} | cut -d '/' -f2)"          
+          echo Success
+          echo "Current branch/tag: ${{github.ref}}"         
 
   # This workflow contains a single job called "build"
   build:
