@@ -25,21 +25,9 @@ runs:
       shell: bash
       run: |
         echo "File path: ${{ inputs.folder_path }}/file_list.txt"
-#        steps.create_file.outputs.file_path = ${{ inputs.folder_path }}/file_list.txt
-#        echo "File path: ${{ outputs.file_path }}"
 
 outputs:
   file_path:
     description: "file, created by our action"
     value: ${{ inputs.folder_path }}/file_list.txt
 
-#  echo folder path
-#  echo ${{ inputs.folder_path }}
-#  mkdir -p "${{ inputs.folder_path }}"
-#  echo "This is a file created by My Action." > "${{ inputs.folder_path }}/file.txt"
-#  echo "folder_path=${{ inputs.folder_path }}"
-
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#
