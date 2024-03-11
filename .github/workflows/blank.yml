@@ -53,7 +53,10 @@ jobs:
           folder_path: ${{ github.event.inputs.folder_path }}
       - name: Extract tag name
         run: |
-          tag_name=$(echo ${{ github.ref }} | sed 's/refs\/tags\///')
+          tag_name1=$(echo ${{ github.ref_name }} | grep -o 'refs/tags/[^/]+$')
+          echo "The tag name is ${{ tag_name1 }}"
+          echo "The github ref name is ${{ github.ref_name }}"
+          tag_name= $(echo ${{ github.ref }} | sed 's/refs\/tags\///')
           echo "Extracted tag name: $tag_name"
           echo "::set-output name=extracted_tag::$tag_name"
       - name: Create release
