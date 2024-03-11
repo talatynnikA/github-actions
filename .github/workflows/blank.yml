@@ -12,9 +12,33 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      GITHUB_REF:
+        type: string
+        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check branch/tag name
+        run: |
+          if [[ ${{ github.ref }} != refs/heads/${{ github.event.inputs.branch_name }} ]]; then
+            echo "Invalid branch name. Skipping build."
+            exit 1
+          elif [[ ${{ github.ref }} != refs/tags/${{ github.event.inputs.tag_name }} ]]; then
+            echo "Invalid tag name. Skipping build."
+            exit 1
+          fi
+        # Only continue if branch/tag name is valid
+      # Your build steps here (assuming valid branch/tag)
+      - name: output current branch
+        run: echo current branch=$github.ref
+
+      # ... other steps
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
