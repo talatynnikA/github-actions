@@ -22,6 +22,16 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  auto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check branch/tag name
+        run: |
+          echo "Github ref: ${{ github.ref }}"
+          echo hello
+  
+
   prepare:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -61,15 +71,6 @@ jobs:
         with:
           name: my-artifact
           path: ${{ github.event.inputs.folder_path }}/file_list.txt
-      - name: Read version from file
-        run: |
-          version=$(cat version.txt)
-          echo "Current version: $version"
-      - name: Increment version
-        run: |
-          new_version=$(echo $version + 1 | bc)
-          echo "New version: $new_version"
-          echo "$new_version > version.txt"
       - name: Create release
         uses: actions/create-release@v1
         env:
