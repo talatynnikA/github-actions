@@ -46,6 +46,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          create-tag: ${{ github.event.inputs.branch_name }}
       - uses: ./my-action
         with:
           folder_path: ${{ github.event.inputs.folder_path }}
+      - name: Extract tag name
+        run: |
+          tag_name=$(echo ${{ github.ref }} | sed 's/refs\/tags\///')
+          echo "Extracted tag name: $tag_name"
+          echo "::set-output name=extracted_tag::$tag_name"
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}  # Required for authenticated API access
+        with:
+          tag_name: ${{ steps.Extract_tag_name.outputs.extracted_tag }}  # Use extracted tag
+          release_name: Release ${{ steps.Extract_tag_name.outputs.extracted_tag }}
+          body: |
+            Release for ${{ github.event.inputs.branch_name }}
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ steps.my-action.outputs.file_path }}  #using outputs
+          asset_name: file_list.txt
+          asset_content_type: text/plain
